@@ -1,29 +1,26 @@
-from flask import Flask, render_template, request
-import csv
+from flask import Flask, render_template, request, redirect, session
+from flask_session import Session
 
-# Configure App
 app = Flask(__name__)
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
+todos = []
 
 
 @app.route("/")
-def index():
-    return render_template("index.html")
+def tasks():
+    if "todos" not in session:
+        session["todos"] = []
+    return render_template("tasks.html", todos=session["todos"])
 
 
-@app.route("/register", methods=["POST"])
-def register():
-    if not request.form.get("name") or not request.form.get("dorm"):
-        return render_template("failure.html")
-    file = open("registered.csv", "a")
-    writer = csv.writer(file)
-    writer.writerow((request.form.get("name"), request.form.get("dorm")))
-    file.close()
-    return render_template("success.html")
-
-
-@app.route("/registered")
-def registered():
-    with open("registered.csv", "r") as file:
-        reader = csv.reader(file)
-        students = list(reader)
-    return render_template("registered.html", students=students)
+@app.route("/add", methods=["GET", "POST"])
+def add():
+    if request.method == "GET":
+        return render_template("add.html")
+    else:
+        todo = request.form.get("task")
+        session["todos"].append(todo)
+        return redirect("/")
