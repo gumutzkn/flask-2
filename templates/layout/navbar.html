@@ -1,0 +1,15 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container">
+    <a class="navbar-brand" href="/">Navbar</a>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav ml-auto">
+        <a class="nav-link text-white" href="/register">Register</a>
+        {% if session['username'] %}
+        <a class="nav-link text-white" href="/logout">Logout</a>
+        {% else %}
+        <a class="nav-link text-white" href="/login">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
